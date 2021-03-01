@@ -580,6 +580,19 @@ class SmsRemover {
 
     return finalResult;
   }
+   Future<bool> removeSms(String fromAddress) async {
+    Map arguments = {};
+    arguments['fromAddress'] = fromAddress;
+    bool finalResult;
+    try {
+      final bool result = await platform.invokeMethod('removeSms2', arguments);
+      finalResult = result;
+    } catch (e) {
+      print(e);
+    }
+
+    return finalResult;
+  }
 }
 
 class SimCardsProvider {

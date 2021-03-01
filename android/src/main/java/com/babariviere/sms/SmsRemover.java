@@ -37,6 +37,44 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
         }
         return true;
     }
+    private boolean deleteSms2(String fromAddress) {
+        Context context = registrar.context();
+        boolean isDeleted = false;
+        try {
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            Cursor c = context.getContentResolver().query(uriSms,
+                    new String[] { "_id", "thread_id", "address", "person", "date", }, "read=0", null, null);
+
+            if (c != null && c.moveToFirst()) {
+                do {
+                    long id = c.getLong(0);
+                    long threadId = c.getLong(1);
+                    String address = c.getString(2);
+                    String date = c.getString(3);
+                    Log.d("log>>>", "0--->" + c.getString(0) + "1---->" + c.getString(1) + "2---->" + c.getString(2)
+                            + "3--->" + c.getString(3) + "4----->" + c.getString(4));
+                    Log.d("log>>>", "date" + c.getString(0));
+
+                    ContentValues values = new ContentValues();
+                    values.put("read", true);
+                    context.getContentResolver().update(Uri.parse("content://sms/"), values, "_id=" + id, null);
+
+                    if (address.equals(fromAddress)) {
+                        // mLogger.logInfo("Deleting SMS with id: " + threadId);
+                        context.getContentResolver().delete(Uri.parse("content://sms/" + id), "date=?",
+                                new String[] { c.getString(4) });
+                        Log.d("log>>>", "Delete success.........");
+                    }
+                } while (c.moveToNext());
+            }
+            isDeleted = true;
+        } catch (Exception e) {
+            isDeleted = false;
+            Log.e("log>>>", e.toString());
+        }
+        return isDeleted;
+    }
+
 
     @Override
     public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
@@ -45,6 +83,11 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
                 if(methodCall.hasArgument("id")){
                     Log.i("SMSREMOVER", "method called for removing sms: " + methodCall.argument("id") );
                     result.success(this.deleteSms(Integer.parseInt(methodCall.argument("id").toString()), Integer.parseInt(methodCall.argument("thread_id").toString())));
+                }
+            case "removeSms2":
+                if (methodCall.hasArgument("fromAddress")) {
+                    Log.i("SMSREMOVER", "method called for removing sms: " + methodCall.argument("fromAddress"));
+                    deleteSms2(methodCall.argument("fromAddress").toString());
                 }
         }
 
