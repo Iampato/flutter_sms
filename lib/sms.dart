@@ -2,9 +2,11 @@
 library sms_maintained;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+
 import 'package:sms_maintained/contact.dart';
 import 'package:sms_maintained/globals.dart';
 
@@ -247,6 +249,32 @@ class SmsThread {
 
   /// Set contact info
   set contact(Contact contact) => this._contact = contact;
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_id': _id,
+      '_address': _address,
+      '_contact': _contact?.toMap(),
+      '_messages': _messages?.map((x) => x?.toMap)?.toList(),
+    };
+  }
+
+  factory SmsThread.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return SmsThread(
+      map['_id'],
+      // map['_address'],
+      // Contact.fromMap(map['_contact']),
+      // List<SmsMessage>.from(
+      //     map['_messages']?.map((x) => SmsMessage.fromJson(x))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SmsThread.fromJson(String source) =>
+      SmsThread.fromMap(json.decode(source));
 }
 
 /// A SMS receiver that creates a stream of SMS
@@ -521,12 +549,12 @@ class SimCard {
   String imei;
   SimCardState state;
 
-  SimCard({
-    @required this.slot,
-    @required this.imei,
-    this.state = SimCardState.Unknown
-  }) : assert(slot != null),
-       assert(imei != null);
+  SimCard(
+      {@required this.slot,
+      @required this.imei,
+      this.state = SimCardState.Unknown})
+      : assert(slot != null),
+        assert(imei != null);
 
   SimCard.fromJson(Map map) {
     if (map.containsKey('slot')) {
@@ -536,7 +564,7 @@ class SimCard {
       this.imei = map['imei'];
     }
     if (map.containsKey('state')) {
-      switch(map['state']) {
+      switch (map['state']) {
         case 0:
           this.state = SimCardState.Unknown;
           break;
@@ -560,11 +588,9 @@ class SimCard {
   }
 }
 
-
 //added by Geordy Van Cutsem
 class SmsRemover {
   static const platform = const MethodChannel(METHOD_CHANNEL_REMOVE_SMS);
-
 
   Future<bool> removeSmsById(int id, int threadId) async {
     Map arguments = {};
@@ -574,13 +600,14 @@ class SmsRemover {
     try {
       final bool result = await platform.invokeMethod('removeSms', arguments);
       finalResult = result;
-    } catch (e){
+    } catch (e) {
       print(e);
     }
 
     return finalResult;
   }
-   Future<bool> removeSms(String fromAddress) async {
+
+  Future<bool> removeSms(String fromAddress) async {
     Map arguments = {};
     arguments['fromAddress'] = fromAddress;
     bool finalResult;
@@ -614,7 +641,7 @@ class SimCardsProvider {
     final simCards = new List<SimCard>();
 
     dynamic response = await _channel.invokeMethod('getSimCards', null);
-    for(Map map in response) {
+    for (Map map in response) {
       simCards.add(new SimCard.fromJson(map));
     }
 

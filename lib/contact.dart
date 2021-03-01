@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 
 /// Class that represents the photo of a [Contact]
@@ -22,6 +24,26 @@ class Photo {
     }
     return _bytes;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_uri': _uri?.toString(),
+      '_isFullSize': _isFullSize,
+      '_bytes': _bytes?.toList(),
+    };
+  }
+
+  factory Photo.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+    return Photo(
+      Uri.parse(map['_uri']),
+      isFullSize: map['_isFullSize'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Photo.fromJson(String source) => Photo.fromMap(json.decode(source));
 }
 
 /// A contact's photo query
@@ -115,6 +137,35 @@ class Contact {
   /// Gets the thumbnail representation of the [Contact] photo if any,
   /// otherwise returns null.
   Photo get thumbnail => this._thumbnail;
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_fullName': _fullName,
+      '_firstName': _firstName,
+      '_lastName': _lastName,
+      '_address': _address,
+      '_thumbnail': _thumbnail?.toMap(),
+      '_photo': _photo?.toMap(),
+    };
+  }
+
+  factory Contact.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return Contact(
+      map['_address'],
+      fullName: map['_firstName'] + " " + map['_lastName'],
+      firstName: map['_firstName'],
+      lastName: map['_lastName'],
+      thumbnail: Photo.fromMap(map['_thumbnail']),
+      photo: Photo.fromMap(map['_photo']),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Contact.fromXJson(String source) =>
+      Contact.fromMap(json.decode(source));
 }
 
 /// Called when sending SMS failed
