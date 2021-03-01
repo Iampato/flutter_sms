@@ -28,7 +28,8 @@ public class SmsRemover implements PluginRegistry.RequestPermissionsResultListen
     private boolean deleteSms(int id, int thread_id) {
         Context context = registrar.context();
         try{
-            context.getContentResolver().delete(Uri.parse("content://sms"), "thread_id=? and _id=?", new String[]{String.valueOf(thread_id), String.valueOf(id)} );
+            context.getContentResolver().delete(Uri.parse("content://sms/" + id), null, null);
+            // context.getContentResolver().delete(Uri.parse("content://sms"), "thread_id=? and _id=?", new String[]{String.valueOf(thread_id), String.valueOf(id)} );
             Log.i("DELETE-SMS", "deleted sms with id: " + id);
         } catch (Exception e) {
             Log.e(TAG, "deleteSms: id + " + id, e);
