@@ -36,7 +36,7 @@ class MmsReceiver implements StreamHandler, RequestPermissionsResultListener {
   private final String[] permissionsList = new String[] {Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS};
   private EventSink sink;
 
-  SmsReceiver(Registrar registrar) {
+  MmsReceiver(Registrar registrar) {
     this.registrar = registrar;
     this.permissions = new Permissions(registrar.activity());
     registrar.addRequestPermissionsResultListener(this);
