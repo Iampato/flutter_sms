@@ -14,6 +14,7 @@ import io.flutter.plugin.common.StandardMethodCodec;
  */
 public class SmsPlugin {
     private static final String CHANNEL_RECV = "plugins.babariviere.com/recvSMS";
+    private static final String CHANNEL_RECM = "plugins.babariviere.com/recmMMS";
     private static final String CHANNEL_SMS_STATUS = "plugins.babariviere.com/statusSMS";
     private static final String CHANNEL_SEND = "plugins.babariviere.com/sendSMS";
     private static final String CHANNEL_QUER = "plugins.babariviere.com/querySMS";
@@ -22,6 +23,7 @@ public class SmsPlugin {
     private static final String CHANNEL_USER_PROFILE = "plugins.babariviere.com/userProfile";
     private static final String CHANNEL_SIM_CARDS = "plugins.babariviere.com/simCards";
     private static final String CHANNEL_REMOVE = "geordyvc.sms.remove.channel";
+
     /**
      * Plugin registration.
      */
@@ -40,6 +42,12 @@ public class SmsPlugin {
                 CHANNEL_RECV, JSONMethodCodec.INSTANCE);
         receiveSmsChannel.setStreamHandler(receiver);
 
+        // MMS receiver
+        final MmsReceiver mmsreceiver = new MmsReceiver(registrar);
+        final EventChannel receiveSmsChannel = new EventChannel(registrar.messenger(),
+                CHANNEL_RECM, JSONMethodCodec.INSTANCE);
+        receiveSmsChannel.setStreamHandler(receiver);
+
         // SMS status receiver
         new EventChannel(registrar.messenger(), CHANNEL_SMS_STATUS, JSONMethodCodec.INSTANCE)
                 .setStreamHandler(new SmsStateHandler(registrar));
@@ -54,6 +62,9 @@ public class SmsPlugin {
         final SmsQuery query = new SmsQuery(registrar);
         final MethodChannel querySmsChannel = new MethodChannel(registrar.messenger(), CHANNEL_QUER, JSONMethodCodec.INSTANCE);
         querySmsChannel.setMethodCallHandler(query);
+
+        /// MMS query
+        // TODO
 
         /// Contact query
         final ContactQuery contactQuery = new ContactQuery(registrar);
