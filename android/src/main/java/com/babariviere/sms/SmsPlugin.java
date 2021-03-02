@@ -44,9 +44,9 @@ public class SmsPlugin {
 
         // MMS receiver
         final MmsReceiver mmsreceiver = new MmsReceiver(registrar);
-        final EventChannel receiveSmsChannel = new EventChannel(registrar.messenger(),
+        final EventChannel receiveMmsChannel = new EventChannel(registrar.messenger(),
                 CHANNEL_RECM, JSONMethodCodec.INSTANCE);
-        receiveSmsChannel.setStreamHandler(receiver);
+        receiveMmsChannel.setStreamHandler(receiver);
 
         // SMS status receiver
         new EventChannel(registrar.messenger(), CHANNEL_SMS_STATUS, JSONMethodCodec.INSTANCE)
