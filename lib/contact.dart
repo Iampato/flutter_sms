@@ -151,10 +151,13 @@ class Contact {
 
   factory Contact.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
+    print("*****************************************");
+    print("$map");
+    print("*****************************************");
 
     return Contact(
       map['_address'],
-      fullName: map['_firstName'] ?? "" + " " + map['_lastName'] ?? "",
+        fullName: map['_firstName'] ?? "" + " " + map['_lastName'] ?? "",
       firstName: map['_firstName'] ?? "",
       lastName: map['_lastName'] ?? "",
       thumbnail: Photo.fromMap(map['_thumbnail']),
