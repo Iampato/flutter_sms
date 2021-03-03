@@ -154,9 +154,9 @@ class Contact {
 
     return Contact(
       map['_address'],
-      fullName: map['_firstName'] + " " + map['_lastName'],
-      firstName: map['_firstName'],
-      lastName: map['_lastName'],
+      fullName: map['_firstName'] ?? "" + " " + map['_lastName'] ?? "",
+      firstName: map['_firstName'] ?? "",
+      lastName: map['_lastName'] ?? "",
       thumbnail: Photo.fromMap(map['_thumbnail']),
       photo: Photo.fromMap(map['_photo']),
     );
