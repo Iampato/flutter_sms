@@ -91,6 +91,30 @@ class SmsMessage implements Comparable<SmsMessage> {
     }
   }
 
+  SmsMessage.customFromJson(Map data) {
+   this._address = data["address"];
+    this._body = data["body"];
+    if (data.containsKey("_id")) {
+      this._id = data["_id"];
+    }
+    if (data.containsKey("thread_id")) {
+      this._threadId = data["thread_id"];
+    }
+    if (data.containsKey("read")) {
+      this._read = data["read"];
+    }
+    if (data.containsKey("kind")) {
+      this._kind = data["kind"];
+    }
+    if (data.containsKey("date")) {
+      this._date = new DateTime.fromMillisecondsSinceEpoch(data["date"]);
+    }
+    if (data.containsKey("date_sent")) {
+      this._dateSent =
+          new DateTime.fromMillisecondsSinceEpoch(data["date_sent"]);
+    }
+  }
+
   /// Convert SMS to map
   Map get toMap {
     Map res = {};
