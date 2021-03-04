@@ -36,8 +36,8 @@ class Photo {
   factory Photo.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     return Photo(
-      Uri.parse(map['_uri']),
-      isFullSize: map['_isFullSize'],
+      Uri.parse(map['_uri']) ?? null,
+      isFullSize: map['_isFullSize'] ?? null,
     );
   }
 
@@ -157,7 +157,13 @@ class Contact {
 
     return Contact(
       map['_address'],
-        fullName: map['_firstName'] ?? "" + " " + map['_lastName'] ?? "",
+      fullName: map['_firstName'] == null && map['_lastName'] == null
+          ? map['_address']
+          : map['_firstName'] == null
+              ? ""
+              : map['_firstName'] + " " + map['_lastName'] == null
+                  ? ""
+                  : map['_lastName'],
       firstName: map['_firstName'] ?? "",
       lastName: map['_lastName'] ?? "",
       thumbnail: Photo.fromMap(map['_thumbnail']),
