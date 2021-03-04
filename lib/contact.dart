@@ -151,9 +151,9 @@ class Contact {
 
   factory Contact.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    print("*****************************************");
-    print("$map");
-    print("*****************************************");
+    // print("*****************************************");
+    // print("$map");
+    // print("*****************************************");
 
     return Contact(
       map['_address'],
